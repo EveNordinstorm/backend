@@ -4,9 +4,10 @@ const ProjectSchema = new mongoose.Schema({
   name: String,
   description: String,
   technologies: [String],
-  githubLink: String,
+  githubLink: [String],
   liveLink: String,
   image: String,
+  logo: String,
 });
 
 module.exports = mongoose.model("Project", ProjectSchema);
