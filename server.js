@@ -11,7 +11,14 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from the backend
 app.use("/public", express.static(path.join(__dirname, "public")));
+
+// Serve static files from the Angular app
+app.use(
+  express.static(path.join(__dirname, "dist", "portfolio-website", "browser"))
+);
 
 // MongoDB connection
 mongoose
@@ -27,7 +34,7 @@ const Project = require("./models/Project");
 
 app.get("/api/projects", async (req, res) => {
   try {
-    const projects = await Project.find().sort({ _id: -1 });
+    const projects = await Project.find();
     res.status(200).json(projects);
   } catch (error) {
     res.status(500).json({ error: "Error fetching projects" });
@@ -76,6 +83,13 @@ app.post("/api/contact", async (req, res) => {
     console.error("Error in /api/contact:", error);
     res.status(500).json({ message: "Error sending message" });
   }
+});
+
+// Catch all other routes and return the index.html
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "dist", "portfolio-website", "browser", "index.html")
+  );
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
